@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>DrapShop</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -16,11 +16,11 @@
     <!-- Scripts -->
     <link rel="stylesheet" href="{{ URL::asset('scss/app.css') }}">
     <link rel="stylesheet" href="{{ URL::asset('css/app.css') }}">
-    <script src="{{ URL::asset('js/app.js') }}" defer></script>
-    <script src="{{ URL::asset('js/main.js') }}" defer></script>
 </head>
 <body>
     <div id="app">
     </div>
+    <script src="{{ URL::asset('js/app.js') }}" defer></script>
+    <script src="{{ URL::asset('js/main.js') }}" defer></script>
 </body>
 </html>
