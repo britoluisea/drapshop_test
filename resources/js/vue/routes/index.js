@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 import home from "../views/home.vue";
 import account from "../views/account.vue";
+import security from "../views/security.vue";
 import customer from "../views/customer.vue";
 import sales from "../views/sales.vue";
 
@@ -19,6 +20,11 @@ const routes = [
 		path: '/account',
 		name: 'account',
 		component: account,
+	},
+	{
+		path: '/security',
+		name: 'security',
+		component: security,
 	},
 	{
 		path: '/customer',

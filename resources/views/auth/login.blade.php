@@ -5,6 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
+                @guest
                 <div class="card-header">{{ __('Login') }}</div>
 
                 <div class="card-body">
@@ -66,6 +67,14 @@
                         </div>
                     </form>
                 </div>
+                @else
+                <div class="card-header">Dashboard</div>
+                    <div class="card-body">
+                        Welcome <strong>{{auth()->user()->name}}</strong>
+                        <br>
+                        You are logged in!
+                    </div>
+                @endguest
             </div>
         </div>
     </div>

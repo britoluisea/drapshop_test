@@ -23,11 +23,6 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('layouts.mainLayout', ['user']);
-    }
-    public function getUser()
-    {
-        $user = Auth::user();
-        return response()->json(['user'=>$user]);
+        return view('layouts.mainLayout');
     }
 }
