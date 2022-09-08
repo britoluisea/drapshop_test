@@ -18190,6 +18190,10 @@ var routes = [{
   name: 'home',
   component: _views_home_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
 }, {
+  path: '/home',
+  name: 'home',
+  component: _views_home_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
+}, {
   path: '/account',
   name: 'account',
   component: _views_account_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
