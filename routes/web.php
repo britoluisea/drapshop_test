@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 Auth::routes();
 // llamar datos de login
 Route::get('/getUser', 'UserController@getUser')->middleware('auth');
-Route::get('/changePass', 'UserController@changePass')->middleware('auth');
+Route::post('/changePass', 'UserController@changePass')->middleware('auth');
 //cambiando ruta raiz por el login default
 Route::get('/', function() {return view('auth.login');}); 
 //validar si existe una session 
