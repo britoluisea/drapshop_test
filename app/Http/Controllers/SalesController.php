@@ -29,9 +29,9 @@ class SalesController extends Controller
     {
         $insert = [
             'user_id'=>$request['user_id'], 
-            'customer_id'=>$request['customer_id'], 
-            'date'=>$request['date'], 
-            'total'=>$request['total'], 
+            'name'=>$request['name'], 
+            'sku'=>$request['sku'], 
+            'price'=>$request['price'], 
         ];
         $prod = Productos::create($insert);
         return response()->json(['prod'=>$prod]);
