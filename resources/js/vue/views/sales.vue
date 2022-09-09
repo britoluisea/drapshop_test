@@ -36,6 +36,8 @@ export default {
 			},
 			user_id: 0,
 			list: [],
+    		toUsd: 1,
+    		toEur: 1,
 		}
 	},
 	created(){
@@ -76,6 +78,8 @@ export default {
             .then((r) => {
 				t.list = [];
 				t.list = r.data.list;
+				t.toUsd = r.data.toUsd;
+				t.toEur = r.data.toEur;
                 console.log('getListSales', t.list);
 				t.showForm = false;
             })
