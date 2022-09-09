@@ -1,4 +1,9 @@
 ## Prueba practica para DrapShop
+Laravel 9 <br>
+PHP 8 <br>
+VUE 3 <br>
+Bootstrap 5 <br>
+Laravel-mix 6 <br>
 
 ## Inslatacion 
 - **Entrar en la carpeta, ejecutar composer install**
@@ -6,6 +11,7 @@
 - **Correr php artisan migrate**
 - **Ejecutar npm install & npm run dev**
 - **por ultimo correr php artisan serve**
+
 
 ### Como funciona
 
