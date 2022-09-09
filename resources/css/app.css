@@ -6,3 +6,13 @@
 html {
   font-family: "ProximaNova", sans-serif;
 }
+
+.btn-light{
+  border: 1px solid #ccc;
+}
+.btn-light2{
+  border: 1px solid #ccc;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-left: 10px;
+}
