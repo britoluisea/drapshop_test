@@ -190,9 +190,7 @@ export default {
 				let tt = Number(carry) + (Number(p) * Number(q))
                 console.log('total', tt);
                 if (isNaN(tt)) {tt=0;}
-                t.$parent.f.total = Number(tt)
-      			.toFixed(2)
-      			.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                t.$parent.f.total = Number(tt).toFixed(2)
                 return t.$parent.f.total
             }, 0);
         }

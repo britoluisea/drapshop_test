@@ -69,7 +69,8 @@ class SalesController extends Controller
                     'user_id'=>$request['user_id'], 
                     'note_id'=>$sales_id, 
                     'item_id'=>$item['id'], 
-                    'quantity'=>$item['q'], 
+                    'quantity'=>$item['q'],
+                    'price'=>$item['p'], 
                     'total'=>number_format(($item['p']*$item['q']), 2, '.', ','), 
                 ];
                 $salesItems = SalesItems::create($insert2);
@@ -87,9 +88,8 @@ class SalesController extends Controller
                 foreach ($r->items as $key => $value) {
                     
                     $r->items[$key]->q = $value->quantity;
+                    $r->items[$key]->p = $value->price;
                     $r->items[$key]->t = $value->total;
-                    $item = Productos::where('id', $value->item_id)->first();
-                    $r->items[$key]->p = (!empty($item)) ? $item->price : 0;
                 }
             }
         }
@@ -113,6 +113,7 @@ class SalesController extends Controller
                     'note_id'=>$request['id'], 
                     'item_id'=>$item['id'], 
                     'quantity'=>$item['q'], 
+                    'price'=>$item['p'], 
                     'total'=>number_format(($item['p']*$item['q']), 2, '.', ','), 
                 ];
                 $salesItems = SalesItems::create($insert2);

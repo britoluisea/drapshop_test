@@ -8,6 +8,7 @@
     				<th>Date</th>
     				<th class="text-right">Total</th>
     				<th width="50px"></th>
+    				<th width="50px"></th>
     			</tr>
     		</thead>
     		<tbody v-if="list.length==0">
@@ -25,6 +26,9 @@
     				<td class="text-right">{{i.total}}</td>
     				<td width="50px" class="text-center">
     					<button type="button" class="btn btn-primary btn-sm" @click="$parent.editItem(i)"><i class="fa fa-edit"></i></button>
+    				</td>
+    				<td width="50px" class="text-center">
+    					<button type="button" class="btn btn-danger btn-sm" @click="$parent.delItem(i)"><i class="fa fa-trash"></i></button>
     				</td>
     			</tr>
     		</tbody>

@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('note_id')->default(0);
             $table->integer('item_id')->default(0);
             $table->string('quantity');
+            $table->string('price');
             $table->string('total');
             $table->timestamps();
         });
