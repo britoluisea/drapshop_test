@@ -97,6 +97,28 @@ class SalesController extends Controller
     }
     public function updateSales(Request $request)
     {
-        return response()->json(['list'=>$list]);
+        $status = false;
+        $insert1 = [
+            'customer_id'=>$request['customer_id'], 
+            'date'=>$request['date'], 
+            'total'=>$request['total'], 
+        ];
+        $sales = Sales::where('id', $request['id'])->update($insert1);
+        if($sales){
+            $status=true;
+            $delete = SalesItems::where('note_id', $request['id'])->delete();
+            foreach ($request['listItems'] as $item) {
+                $insert2 = [
+                    'user_id'=>$request['user_id'], 
+                    'note_id'=>$request['id'], 
+                    'item_id'=>$item['id'], 
+                    'quantity'=>$item['q'], 
+                    'total'=>number_format(($item['p']*$item['q']), 2, '.', ','), 
+                ];
+                $salesItems = SalesItems::create($insert2);
+                if(!$salesItems){$status=false;}
+            }
+        }
+        return response()->json(['status'=>$status]);
     }
 }

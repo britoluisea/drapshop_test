@@ -19,10 +19,10 @@
     					</select>
     				</td>
     				<td>
-    					<input type="text" class="form-control" v-model="i.q" >
+    					<input type="text" class="form-control" v-model="i.q" @keyup="total()">
     				</td>
     				<td>
-    					<input type="text" class="form-control" v-model="i.p" >
+    					<input type="text" class="form-control" v-model="i.p" @keyup="total()">
     				</td>
     				<td class="text-right">${{(i.q*i.p).toFixed(2)}}</td>
     			</tr>
@@ -178,7 +178,8 @@ export default {
 					t.$parent.f.listItems[idx].q = item.sku;
 					t.$parent.f.listItems[idx].p = item.price;
 				}
-			})
+			});
+			t.total();
 		},
 		total() {
     		let t = this;

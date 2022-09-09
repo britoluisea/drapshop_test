@@ -17882,6 +17882,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           t.$parent.f.listItems[idx].p = item.price;
         }
       });
+      t.total();
     },
     total: function total() {
       var t = this;
@@ -18040,17 +18041,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         t.message = "Empty product list";
         t.status = 2;
       } else {
-        t.message = "Empty product list";
-        t.status = 2;
-        window.axios.post('/createSales', t.f).then(function (r) {
+        t.message = "";
+        t.status = null;
+        var url = '/createSales';
+
+        if (t.formOpen.action == 'edit') {
+          url = '/updateSales';
+        }
+
+        window.axios.post(url, t.f).then(function (r) {
           console.log('createSales', r);
 
           if (r.data.status) {
-            ;
-            t.status = 1;
+            t.$parent.cancel();
+            t.edit = false;
+            t.status = null;
             t.message = 'Saved successfully';
             t.emptyFields();
-            t.$parent.cancel();
             t.$parent.getListSales();
           }
         })["catch"](function (error) {
@@ -18077,6 +18084,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (t.formOpen.open) {
         t.getCustomer();
+        t.status = null;
 
         if (t.formOpen.action == 'add') {
           t.newAdd();
@@ -18436,6 +18444,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     cancel: function cancel() {
       var t = this;
       t.showForm = false;
+      t.formOpen.action = 'add';
+      t.formOpen.open = false;
+      t.formOpen.data = {};
     },
     getListSales: function getListSales() {
       var t = this;
@@ -18930,17 +18941,23 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       "class": "form-control",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return i.q = $event;
-      }
-    }, null, 8
-    /* PROPS */
+      },
+      onKeyup: _cache[0] || (_cache[0] = function ($event) {
+        return $options.total();
+      })
+    }, null, 40
+    /* PROPS, HYDRATE_EVENTS */
     , _hoisted_9), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, i.q]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
       type: "text",
       "class": "form-control",
       "onUpdate:modelValue": function onUpdateModelValue($event) {
         return i.p = $event;
-      }
-    }, null, 8
-    /* PROPS */
+      },
+      onKeyup: _cache[1] || (_cache[1] = function ($event) {
+        return $options.total();
+      })
+    }, null, 40
+    /* PROPS, HYDRATE_EVENTS */
     , _hoisted_10), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, i.p]])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_11, "$" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)((i.q * i.p).toFixed(2)), 1
     /* TEXT */
     )]);
@@ -18949,11 +18966,11 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ))]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tfoot", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-light btn-light2",
-    onClick: _cache[0] || (_cache[0] = function ($event) {
+    onClick: _cache[2] || (_cache[2] = function ($event) {
       return $options.addLinea();
     })
   }, "+ Linea")])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.withDirectives)((0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_13, [_hoisted_14, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("form", {
-    onSubmit: _cache[5] || (_cache[5] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
+    onSubmit: _cache[7] || (_cache[7] = (0,vue__WEBPACK_IMPORTED_MODULE_0__.withModifiers)(function ($event) {
       return $options.setProduct();
     }, ["prevent"]))
   }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("input", {
@@ -18966,7 +18983,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     id: "nameprod",
     type: "text",
     "class": "form-control",
-    "onUpdate:modelValue": _cache[1] || (_cache[1] = function ($event) {
+    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
       return $data.f.name = $event;
     }),
     autocomplete: "nameprod"
@@ -18976,7 +18993,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     id: "nameprod",
     type: "text",
     "class": "form-control",
-    "onUpdate:modelValue": _cache[2] || (_cache[2] = function ($event) {
+    "onUpdate:modelValue": _cache[4] || (_cache[4] = function ($event) {
       return $data.f.sku = $event;
     }),
     autocomplete: "nameprod"
@@ -18986,7 +19003,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     id: "nameprod",
     type: "text",
     "class": "form-control",
-    "onUpdate:modelValue": _cache[3] || (_cache[3] = function ($event) {
+    "onUpdate:modelValue": _cache[5] || (_cache[5] = function ($event) {
       return $data.f.price = $event;
     }),
     autocomplete: "nameprod"
@@ -18995,7 +19012,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
   ), [[vue__WEBPACK_IMPORTED_MODULE_0__.vModelText, $data.f.price]])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_25, [_hoisted_26, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_27, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-light",
-    onClick: _cache[4] || (_cache[4] = function ($event) {
+    onClick: _cache[6] || (_cache[6] = function ($event) {
       return $options.cancel();
     })
   }, " Cancel ")])])], 32

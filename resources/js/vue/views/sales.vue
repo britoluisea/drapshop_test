@@ -66,6 +66,9 @@ export default {
     	cancel(){
     		let t = this;
 			t.showForm = false;
+			t.formOpen.action='add';
+			t.formOpen.open=false;
+			t.formOpen.data={};
     	},
     	getListSales(){
     		let t = this;

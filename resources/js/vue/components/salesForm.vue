@@ -138,16 +138,21 @@ export default {
     			t.message="Empty product list";
 				t.status=2;
     		}else{
-    			t.message="Empty product list";
-				t.status=2;
-	            window.axios.post('/createSales', t.f)
+    			t.message="";
+				t.status=null;
+				let url = '/createSales';
+				if(t.formOpen.action=='edit'){
+					url = '/updateSales';
+				}
+	            window.axios.post(url, t.f)
 	            .then((r) => {
 	                console.log('createSales', r);
-						if(r.data.status){;
-							t.status=1;
+						if(r.data.status){
+	                		t.$parent.cancel();
+	                		t.edit = false;
+							t.status=null;
 	                		t.message='Saved successfully';
 	                		t.emptyFields();
-	                		t.$parent.cancel();
 	                		t.$parent.getListSales();
 						}
 	            })
@@ -174,6 +179,7 @@ export default {
     		let t= this;
 			if(t.formOpen.open){
 				t.getCustomer();
+				t.status = null;
 				if(t.formOpen.action=='add'){
 		        	t.newAdd();
 		        }else{
@@ -182,9 +188,7 @@ export default {
 			}
 		},
 	},
-	computed : {
-
-        
+	computed : {        
 	}
 }
 </script>
