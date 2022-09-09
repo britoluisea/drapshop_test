@@ -1,12 +1,11 @@
 ## Prueba practica para DrapShop
 
 ## Inslatacion 
-Entrar en la carpeta, ejecutar composer install <br>
-Al terminar crear el archivo .env, dar conexion a BD
-Correr php artisan migrate
-luego ejecutar npm install & npm run dev
-por ultimo correr php artisan serve 
-realizar sus respectivas pruebas
+- **Entrar en la carpeta, ejecutar composer install**
+- **Crear el archivo .env, dar conexion a BD**
+- **Correr php artisan migrate**
+- **Ejecutar npm install & npm run dev**
+- **por ultimo correr php artisan serve**
 
 ### Como funciona
 
