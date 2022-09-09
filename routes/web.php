@@ -21,10 +21,18 @@ Route::post('/editAccount', 'UserController@editAccount')->middleware('auth');
 Route::post('/editAccount', 'UserController@editAccount')->middleware('auth');
 Route::post('/getCustomer', 'CustomerController@getListCustomer')->middleware('auth');
 Route::post('/setCustomer', 'CustomerController@setCustomer')->middleware('auth');
+Route::post('/getListProd', 'SalesController@getListProd')->middleware('auth');
+Route::post('/createProd', 'SalesController@createProd')->middleware('auth');
+Route::post('/getListSales', 'SalesController@getListSales')->middleware('auth');
+Route::post('/createSales', 'SalesController@createSales')->middleware('auth');
+Route::post('/getSalesById', 'SalesController@getSalesById')->middleware('auth');
+Route::post('/updateSales', 'SalesController@updateSales')->middleware('auth');
+
+
+
+
+
 //cambiando ruta raiz por el login default
-
-
-
 Route::get('/', function() {return view('auth.login');}); 
 //validar si existe una session 
 Route::get('/{any}', 'HomeController@index')
