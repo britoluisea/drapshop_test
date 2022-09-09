@@ -17,6 +17,7 @@ Auth::routes();
 // llamar datos de login
 Route::get('/getUser', 'UserController@getUser')->middleware('auth');
 Route::post('/changePass', 'UserController@changePass')->middleware('auth');
+Route::post('/editAccount', 'UserController@editAccount')->middleware('auth');
 //cambiando ruta raiz por el login default
 Route::get('/', function() {return view('auth.login');}); 
 //validar si existe una session 

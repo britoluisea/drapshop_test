@@ -70,7 +70,7 @@ export default {
                 	t.emptyFields();
             })
             .catch((error) => {
-                console.log('error al obtener data de user');
+                console.log('error changePass');
                 t.message=error.response.data.message;
                 t.errors=error.response.data.errors;
 				t.status=2;

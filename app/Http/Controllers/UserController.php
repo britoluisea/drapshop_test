@@ -30,5 +30,22 @@ class UserController extends Controller
         ];
         $r =User::where('id', $request['id'])->update($data); 
         return response()->json(['status' => ($r),], 200);  
+    } 
+    public function editAccount(Request $request)
+    {
+        $request->validate([
+            'name' => ['required'],
+            'email' => ['required'],
+        ]);       
+        $data = [  
+            'name' => $request->name,
+            'email' => $request->email,
+        ];
+        $r =User::where('id', $request['id'])->update($data); 
+        $user =User::where('id', $request['id'])->first(); 
+        return response()->json([
+            'status' => ($r),
+            'user' => $user,
+        ], 200);  
     }
 }
