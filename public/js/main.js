@@ -17781,6 +17781,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'itemsProd',
+  props: {
+    edit: {
+      type: Boolean,
+      required: true,
+      "default": false
+    }
+  },
   data: function data() {
     return {
       showFormprod: false,
@@ -17796,6 +17803,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   created: function created() {
     this.user_id = this.$store.getters.getUserData.id;
+    console.log('edit', this.edit);
 
     if (this.user_id != undefined) {
       this.getListProd();
@@ -17874,6 +17882,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           t.$parent.f.listItems[idx].p = item.price;
         }
       });
+    },
+    total: function total() {
+      var t = this;
+      return t.$parent.f.listItems.reduce(function (carry, item) {
+        var q = isNaN(item.q) ? 0 : item.q;
+        var p = isNaN(item.p) ? 0 : item.p;
+        console.log('carry', carry);
+        var tt = Number(carry) + Number(p) * Number(q);
+        console.log('total', tt);
+
+        if (isNaN(tt)) {
+          tt = 0;
+        }
+
+        t.$parent.f.total = Number(tt).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        return t.$parent.f.total;
+      }, 0);
     }
   },
   watch: {
@@ -17883,6 +17908,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (this.user_id != undefined) {
         this.getListProd();
       }
+    },
+    "edit": function edit() {
+      var t = this;
+      console.log('edit', t.edit);
+
+      if (t.edit) {
+        var newList = [];
+        t.$parent.f.listItems.map(function (item, index) {
+          var newItem = item;
+          newItem.options = t.listprod;
+          newItem.id = item.item_id;
+          newList.push(newItem);
+        });
+        t.$parent.f.listItems = [];
+        t.$parent.f.listItems = newList;
+      }
+    },
+    "$parent.f.listItems": function $parentFListItems() {
+      this.total();
     }
   },
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)({
@@ -17942,18 +17986,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       errors: '',
       status: null,
       listprod: [],
-      listCustomer: []
+      listCustomer: [],
+      edit: false
     };
   },
   created: function created() {
     var t = this;
     t.f.user_id = t.$store.getters.getUserData.id;
-
-    if (t.formOpen.action == 'add') {
-      t.newAdd();
-    } else {
-      t.editItem(t.formOpen.data);
-    }
   },
   methods: {
     getCustomer: function getCustomer() {
@@ -17981,27 +18020,46 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       t.f.date = i.date;
       t.f.total = i.total;
       t.f.customer = i.customer;
-      t.f.listItems = i.listItems;
+      t.f.listCustomer = [];
+      window.axios.post('/getSalesById', t.f).then(function (r) {
+        console.log('getSalesById', r);
+        console.log('items', r.data.r.items);
+        t.f.listItems = r.data.r.items;
+        t.edit = true;
+      })["catch"](function (error) {
+        console.log('error');
+      });
     },
     createSales: function createSales() {
       var t = this;
-      window.axios.post('/createSales', t.f).then(function (r) {
-        console.log('createSales', r);
 
-        if (r.data.status) {
-          ;
-          t.status = 1;
-          t.message = 'Saved successfully';
-          t.emptyFields();
-          t.cancel();
-          t.$parent.getListSales();
-        }
-      })["catch"](function (error) {
-        console.log('error');
-        t.message = error.response.data.message;
-        t.errors = error.response.data.errors;
+      if (t.f.customer_id == 0) {
+        t.message = "Select Customer";
         t.status = 2;
-      });
+      } else if (t.f.listItems.length == 0) {
+        t.message = "Empty product list";
+        t.status = 2;
+      } else {
+        t.message = "Empty product list";
+        t.status = 2;
+        window.axios.post('/createSales', t.f).then(function (r) {
+          console.log('createSales', r);
+
+          if (r.data.status) {
+            ;
+            t.status = 1;
+            t.message = 'Saved successfully';
+            t.emptyFields();
+            t.$parent.cancel();
+            t.$parent.getListSales();
+          }
+        })["catch"](function (error) {
+          console.log('error');
+          t.message = error.response.data.message;
+          t.errors = error.response.data.errors;
+          t.status = 2;
+        });
+      }
     },
     emptyFields: function emptyFields() {
       var t = this;
@@ -18015,29 +18073,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   watch: {
     "formOpen.open": function formOpenOpen() {
-      if (this.formOpen.open) {
-        this.getCustomer();
+      var t = this;
+
+      if (t.formOpen.open) {
+        t.getCustomer();
+
+        if (t.formOpen.action == 'add') {
+          t.newAdd();
+        } else {
+          t.editItem(t.formOpen.data);
+        }
       }
     }
   },
-  computed: {
-    total: function total() {
-      var t = this;
-      return t.f.listItems.reduce(function (carry, item) {
-        var q = isNaN(item.q) ? 0 : item.q;
-        var p = isNaN(item.p) ? 0 : item.p;
-        var tt = carry + Number(p) * Number(q);
-
-        if (isNaN(tt)) {
-          tt = 0;
-        }
-
-        t.f.total = Number(tt).toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-        console.log('total', tt);
-        return t.f.total;
-      }, 0);
-    }
-  }
+  computed: {}
 });
 
 /***/ }),
@@ -18065,8 +18114,18 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      list: this.listItems
+      list: []
     };
+  },
+  created: function created() {
+    this.list = this.$parent.list;
+    console.log(this.list);
+  },
+  watch: {
+    "$parent.list": function $parentList() {
+      this.list = this.$parent.list;
+      console.log(this.list);
+    }
   }
 });
 
@@ -18380,9 +18439,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     getListSales: function getListSales() {
       var t = this;
-      window.axios.post('/getListSales', t.user_id).then(function (r) {
-        console.log('getListSales', r);
+      window.axios.post('/getListSales', {
+        user_id: t.user_id
+      }).then(function (r) {
+        t.list = [];
         t.list = r.data.list;
+        console.log('getListSales', t.list);
+        t.showForm = false;
       })["catch"](function (error) {
         console.log('error');
       });
@@ -19095,16 +19158,20 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     }),
     format: 'yyyy-MM-dd',
     required: "",
-    placeholder: "Selected date"
+    placeholder: "Select date"
   }, null, 8
   /* PROPS */
-  , ["modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_itemsProd), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_14, "$" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($options.total), 1
+  , ["modelValue"])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createVNode)(_component_itemsProd, {
+    edit: $data.edit
+  }, null, 8
+  /* PROPS */
+  , ["edit"]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_10, [_hoisted_11, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("table", _hoisted_12, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tbody", null, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("tr", null, [_hoisted_13, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_14, "$" + (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)($data.f.total), 1
   /* TEXT */
   )])])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_15, [_hoisted_16, (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", _hoisted_17, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("button", {
     type: "button",
     "class": "btn btn-light",
     onClick: _cache[2] || (_cache[2] = function ($event) {
-      return _ctx.cancel();
+      return _ctx.$parent.cancel();
     })
   }, " Cancel ")])])], 32
   /* HYDRATE_EVENTS */
@@ -19188,7 +19255,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
       key: index
     }, [(0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", _hoisted_8, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(i.id), 1
     /* TEXT */
-    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [i.customer != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(i.customer.name), 1
+    ), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, [i.customer != null ? ((0,vue__WEBPACK_IMPORTED_MODULE_0__.openBlock)(), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementBlock)("div", _hoisted_9, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(i.customer), 1
     /* TEXT */
     )) : (0,vue__WEBPACK_IMPORTED_MODULE_0__.createCommentVNode)("v-if", true)]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("td", null, (0,vue__WEBPACK_IMPORTED_MODULE_0__.toDisplayString)(i.fecha), 1
     /* TEXT */

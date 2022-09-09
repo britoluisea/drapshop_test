@@ -46,6 +46,7 @@ class SalesController extends Controller
             foreach ($list as $key => $v) {
                 $c = Customer::where('id', $v->customer_id)->first();
                 $list[$key]->customer = (!empty($c)) ? $c->name : null;
+                $list[$key]->fecha = strftime("%b %d, %Y", strtotime($v->date));
             }
         }
         return response()->json(['list'=>$list]);
@@ -63,13 +64,13 @@ class SalesController extends Controller
         if($sales){
             $status=true;
             $sales_id = $sales->id;
-            foreach ($request['dataItems'] as $item) {
+            foreach ($request['listItems'] as $item) {
                 $insert2 = [
                     'user_id'=>$request['user_id'], 
-                    'note_id'=>$item['note_id'], 
-                    'item_id'=>$item['item_id'], 
-                    'quantity'=>$item['quantity'], 
-                    'total'=>$item['total'], 
+                    'note_id'=>$sales_id, 
+                    'item_id'=>$item['id'], 
+                    'quantity'=>$item['q'], 
+                    'total'=>number_format(($item['p']*$item['q']), 2, '.', ','), 
                 ];
                 $salesItems = SalesItems::create($insert2);
                 if(!$salesItems){$status=false;}
@@ -80,8 +81,17 @@ class SalesController extends Controller
     public function getSalesById(Request $request)
     {
         $r = Sales::where('id', $request['id'])->first();
-        if(!empty($sales)){
+        if(!empty($r)){
             $r->items = SalesItems::where('note_id', $request['id'])->get();
+            if(count($r->items)){
+                foreach ($r->items as $key => $value) {
+                    
+                    $r->items[$key]->q = $value->quantity;
+                    $r->items[$key]->t = $value->total;
+                    $item = Productos::where('id', $value->item_id)->first();
+                    $r->items[$key]->p = (!empty($item)) ? $item->price : 0;
+                }
+            }
         }
         return response()->json(['r'=>$r]);
     }

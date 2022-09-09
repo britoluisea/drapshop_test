@@ -16,17 +16,17 @@
                 <label for="datenote" class="col-md-2 col-form-label text-md-end">Date:</label>
 
                 <div class="col-md-4">
-                	<Datepicker v-model="f.date" :format="'yyyy-MM-dd'" required placeholder="Selected date"></Datepicker>
+                	<Datepicker v-model="f.date" :format="'yyyy-MM-dd'" required placeholder="Select date"></Datepicker>
                 </div>
             </div>
-            <itemsProd></itemsProd>
+            <itemsProd :edit="edit"></itemsProd>
             <div class="row mb-0 justify-content-end">
             	<hr>
             	<table style="border:0px; width:300px; margin-bottom: 20px;">
             		<tbody>
             			<tr>
             				<td>Total</td>
-            				<td class="text-right">${{total}}</td>
+            				<td class="text-right">${{f.total}}</td>
             			</tr>
             		</tbody>
             	</table>
@@ -38,7 +38,7 @@
                     </button>
                 </div>
                 <div class="col-md-3 offset-md-3">
-                    <button type="button" class="btn btn-light" @click="cancel()">
+                    <button type="button" class="btn btn-light" @click="$parent.cancel()">
                         Cancel
                     </button>
                 </div>
@@ -81,16 +81,13 @@ export default {
 			status: null,
 			listprod: [],
 			listCustomer: [],
+			edit: false
 		}
 	},
 	created(){
     	let t = this;
         t.f.user_id = t.$store.getters.getUserData.id;
-        if(t.formOpen.action=='add'){
-        	t.newAdd();
-        }else{
-        	t.editItem(t.formOpen.data);
-        }
+        
     },
 	methods : {	
     	getCustomer(){
@@ -118,27 +115,49 @@ export default {
 			t.f.date= i.date;
 			t.f.total= i.total;
 			t.f.customer= i.customer;
-			t.f.listItems= i.listItems;
+			t.f.listCustomer= [];
+			window.axios.post('/getSalesById', t.f)
+	            .then((r) => {
+	                console.log('getSalesById', r);
+	                console.log('items', r.data.r.items);
+					t.f.listItems= r.data.r.items;
+					t.edit = true;
+	            })
+	            .catch((error) => {
+	                console.log('error');
+
+	            });
     	},
     	createSales(){
     		let t = this;
-            window.axios.post('/createSales', t.f)
-            .then((r) => {
-                console.log('createSales', r);
-					if(r.data.status){;
-						t.status=1;
-                		t.message='Saved successfully';
-                		t.emptyFields();
-                		t.cancel();
-                		t.$parent.getListSales();
-					}
-            })
-            .catch((error) => {
-                console.log('error');
-                t.message=error.response.data.message;
-                t.errors=error.response.data.errors;
+    		if(t.f.customer_id==0){    			
+    			t.message="Select Customer";
 				t.status=2;
-            });
+    		}
+    		else if(t.f.listItems.length==0){
+    			t.message="Empty product list";
+				t.status=2;
+    		}else{
+    			t.message="Empty product list";
+				t.status=2;
+	            window.axios.post('/createSales', t.f)
+	            .then((r) => {
+	                console.log('createSales', r);
+						if(r.data.status){;
+							t.status=1;
+	                		t.message='Saved successfully';
+	                		t.emptyFields();
+	                		t.$parent.cancel();
+	                		t.$parent.getListSales();
+						}
+	            })
+	            .catch((error) => {
+	                console.log('error');
+	                t.message=error.response.data.message;
+	                t.errors=error.response.data.errors;
+					t.status=2;
+	            });
+	        }
     	},
     	emptyFields(){
     		let t= this;			
@@ -152,27 +171,20 @@ export default {
 	},
 	watch: {
 		"formOpen.open": function(){
-			if(this.formOpen.open){
-				this.getCustomer();
+    		let t= this;
+			if(t.formOpen.open){
+				t.getCustomer();
+				if(t.formOpen.action=='add'){
+		        	t.newAdd();
+		        }else{
+		        	t.editItem(t.formOpen.data);
+		        }
 			}
-		}
+		},
 	},
 	computed : {
 
-        total() {
-    		let t = this;
-            return t.f.listItems.reduce((carry, item) => {
-            	let q = (isNaN(item.q)) ? 0 : item.q;
-				let p = (isNaN(item.p)) ? 0 : item.p;
-				let tt = carry + Number(p) * Number(q)
-                if (isNaN(tt)) {tt=0;}
-                t.f.total = Number(tt)
-      			.toFixed(2)
-      			.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
-                console.log('total', tt);
-                return t.f.total
-            }, 0);
-        }
+        
 	}
 }
 </script>

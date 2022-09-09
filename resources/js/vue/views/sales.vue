@@ -69,10 +69,12 @@ export default {
     	},
     	getListSales(){
     		let t = this;
-            window.axios.post('/getListSales', t.user_id)
+            window.axios.post('/getListSales', {user_id: t.user_id})
             .then((r) => {
-                console.log('getListSales', r);
+				t.list = [];
 				t.list = r.data.list;
+                console.log('getListSales', t.list);
+				t.showForm = false;
             })
             .catch((error) => {
                 console.log('error');

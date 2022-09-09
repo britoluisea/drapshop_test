@@ -78,6 +78,13 @@
 import { mapGetters } from "vuex";
 export default {
 	name: 'itemsProd',
+	props: {
+	  edit: {
+	    type: Boolean,
+	    required: true,
+	    default: false
+	  }
+	},
 	data () {
 		return {
 			showFormprod: false,
@@ -93,6 +100,7 @@ export default {
 	},
 	created(){
         this.user_id = this.$store.getters.getUserData.id;
+        console.log('edit', this.edit)
         if(this.user_id != undefined){
         	this.getListProd();
         }
@@ -172,6 +180,21 @@ export default {
 				}
 			})
 		},
+		total() {
+    		let t = this;
+            return t.$parent.f.listItems.reduce((carry, item) => {
+            	let q = (isNaN(item.q)) ? 0 : item.q;
+				let p = (isNaN(item.p)) ? 0 : item.p;
+                console.log('carry', carry);
+				let tt = Number(carry) + (Number(p) * Number(q))
+                console.log('total', tt);
+                if (isNaN(tt)) {tt=0;}
+                t.$parent.f.total = Number(tt)
+      			.toFixed(2)
+      			.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+                return t.$parent.f.total
+            }, 0);
+        }
 	},
     watch:{
         "getUserData": function(){
@@ -179,6 +202,24 @@ export default {
 	        if(this.user_id != undefined){
 	        	this.getListProd();
 	        }
+        },
+        "edit": function(){
+			let t = this;
+        	console.log('edit', t.edit);
+        	if(t.edit){
+        		let newList = []
+        		t.$parent.f.listItems.map((item, index) => {
+        			let newItem = item;
+        			newItem.options = t.listprod;
+        			newItem.id = item.item_id;
+        			newList.push(newItem);
+        		});
+        		t.$parent.f.listItems = [];
+        		t.$parent.f.listItems = newList;
+        	}
+        },
+        "$parent.f.listItems": function(){
+        	this.total();
         }
     },
     computed: {

@@ -19,7 +19,7 @@
     			<tr v-for="(i, index) in list" :key="index">
     				<td width="50px" class="text-center">{{i.id}}</td>
     				<td>
-    					<div v-if="i.customer!=null">{{i.customer.name}}</div>
+    					<div v-if="i.customer!=null">{{i.customer}}</div>
     				</td>
     				<td>{{i.fecha}}</td>
     				<td class="text-right">{{i.total}}</td>
@@ -42,8 +42,18 @@ export default {
   },
   data () {
     return {
-    	list: this.listItems,
+    	list: [],
     }
+  },
+  created(){
+  	this.list = this.$parent.list;
+  	console.log(this.list)
+  },
+  watch: {
+  	"$parent.list": function(){
+  		this.list = this.$parent.list;
+  	console.log(this.list)
+  	}
   }
 }
 </script>
