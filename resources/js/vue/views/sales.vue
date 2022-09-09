@@ -83,6 +83,20 @@ export default {
                 console.log('error');
             });
         },
+    	delItem(i){
+    		let t = this;
+    		if(confirm('Are you sure you want to delete this item?'))
+    		{
+	            window.axios.post('/deleteSales', i)
+	            .then((r) => {
+	                console.log('deleteSales', r);
+					t.getListSales()
+	            })
+	            .catch((error) => {
+	                console.log('error');
+	            });
+    		}
+        },
 	},
     watch:{
         "getUserData": function(){

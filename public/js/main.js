@@ -18460,6 +18460,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (error) {
         console.log('error');
       });
+    },
+    delItem: function delItem(i) {
+      var t = this;
+
+      if (confirm('Are you sure you want to delete this item?')) {
+        window.axios.post('/deleteSales', i).then(function (r) {
+          console.log('deleteSales', r);
+          t.getListSales();
+        })["catch"](function (error) {
+          console.log('error');
+        });
+      }
     }
   },
   watch: {

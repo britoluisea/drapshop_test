@@ -122,4 +122,14 @@ class SalesController extends Controller
         }
         return response()->json(['status'=>$status]);
     }
+    public function deleteSales(Request $request)
+    {
+        $status = false;
+        $sales = Sales::where('id', $request['id'])->delete();
+        $items = SalesItems::where('note_id', $request['id'])->delete();
+        if($sales && $items){
+            $status=true;
+        }
+        return response()->json(['status'=>$status]);
+    }
 }

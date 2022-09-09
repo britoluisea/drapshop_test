@@ -27,6 +27,7 @@ Route::post('/getListSales', 'SalesController@getListSales')->middleware('auth')
 Route::post('/createSales', 'SalesController@createSales')->middleware('auth');
 Route::post('/getSalesById', 'SalesController@getSalesById')->middleware('auth');
 Route::post('/updateSales', 'SalesController@updateSales')->middleware('auth');
+Route::post('/deleteSales', 'SalesController@deleteSales')->middleware('auth');
 
 
 
